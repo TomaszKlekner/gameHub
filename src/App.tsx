@@ -1,18 +1,19 @@
 import { useState } from 'react';
 
 function App() {
-  const [isVisible, setIsVisiblility] = useState(false);
+  // const [firstName, setFirstName] = useState('');
+  // const [lastName, setLastName] = useState('');
 
-  const handleClick = () => {
-    setIsVisiblility(true);
-    console.log('isVisible: ', isVisible);
-  };
+  const [person, setPerson] = useState({
+    firstName: '',
+    lastName: '',
+  });
+
+  const [isLoading, setIsLoading] = useState(false);
 
   return (
     <div className='container my-5'>
-      <button type='button' onClick={handleClick}>
-        Show
-      </button>
+      {person.firstName}: {person.lastName}
     </div>
   );
 }
