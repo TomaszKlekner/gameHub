@@ -1,9 +1,18 @@
-import Like from './components/Like';
+import { useState } from 'react';
 
 function App() {
+  const [isVisible, setIsVisiblility] = useState(false);
+
+  const handleClick = () => {
+    setIsVisiblility(true);
+    console.log('isVisible: ', isVisible);
+  };
+
   return (
     <div className='container my-5'>
-      <Like onClick={() => console.log('Liked')} color='red' size='30' />
+      <button type='button' onClick={handleClick}>
+        Show
+      </button>
     </div>
   );
 }
