@@ -1,19 +1,19 @@
-import { useState } from 'react';
-import Alert from './components/Alert';
-import Button from './components/Button';
+import ListGroup from './components/ListGroup';
 
 function App() {
-  const [isVisible, setIsVisible] = useState(false);
+  let items = ['New York', 'Tokyo', 'Warsaw', 'Paris', 'London'];
+
+  const handleSelectItem = (item: string) => {
+    console.log(item);
+  };
 
   return (
     <div className='container my-5'>
-      {isVisible && (
-        <Alert onClose={() => setIsVisible(false)}>
-          <strong>Holy guacamole!</strong> You should check in on some of those
-        </Alert>
-      )}
-
-      <Button onClick={() => setIsVisible(true)}>Show Alert</Button>
+      <ListGroup
+        items={items}
+        heading='Cities'
+        onSelecItem={handleSelectItem}
+      />
     </div>
   );
 }
