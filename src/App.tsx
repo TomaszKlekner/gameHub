@@ -1,9 +1,9 @@
-import ExpandableText from './components/ExpandableText/ExpandableText';
+import Form from './components/Form';
 
 function App() {
   return (
     <div className='container my-5'>
-      <ExpandableText>Hello World</ExpandableText>
+      <Form />
     </div>
   );
 }
