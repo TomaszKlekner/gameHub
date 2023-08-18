@@ -1,9 +1,9 @@
-import Form from './components/Form';
+import ExpenseTracker from './components/ExpenseTracker/ExpenseTracker';
 
 function App() {
   return (
     <div className='container my-5'>
-      <Form />
+      <ExpenseTracker />
     </div>
   );
 }
