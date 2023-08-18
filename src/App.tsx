@@ -1,20 +1,22 @@
 import { useState } from 'react';
 
 function App() {
-  const [tags, setTags] = useState(['happy', 'cheerful']);
+  const [bugs, setBugs] = useState([
+    {
+      id: 1,
+      title: 'Bug 1',
+      fixed: false,
+    },
+    {
+      id: 2,
+      title: 'Bug 2',
+      fixed: false,
+    },
+  ]);
 
-  // Nested Objects should be treated as immutable or read-only
-  // Use the spread operator to copy all of the fields
-  // The spread operator creates a shallow copy
   const handleClick = () => {
-    // Add a new item to the array
-    setTags([...tags, 'exciting']);
-
-    // Remove
-    setTags(tags.filter((tag) => tag !== 'happy'));
-
-    // Update
-    setTags(tags.map((tag) => (tag === 'happy' ? 'happyness' : tag)));
+    // Mark first bug as fixed
+    setBugs(bugs.map((bug) => (bug.id === 1 ? { ...bug, fixed: true } : bug)));
   };
 
   return (
