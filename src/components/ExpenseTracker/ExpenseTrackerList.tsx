@@ -3,12 +3,14 @@ import { Expense } from './ExpenseTracker';
 interface Props {
   expenses: Expense[];
   categories: string[];
+  onSelectCategory: (category: string) => void;
   onDeleteExpense: (expense: Expense) => void;
 }
 
 const ExpenseTrackerList = ({
   expenses,
   categories,
+  onSelectCategory,
   onDeleteExpense,
 }: Props) => {
   if (expenses.length === 0) return <p>No expenses tracked</p>;
@@ -22,9 +24,10 @@ const ExpenseTrackerList = ({
           id='category'
           className='form-select'
           aria-label='Select category'
-          defaultValue={'DEFAULT'}
+          defaultValue={''}
+          onChange={(e) => onSelectCategory(e.target.value)}
         >
-          <option value='DEFAULT'>All categories</option>
+          <option value=''>All categories</option>
           {categories.map((category, index) => (
             <option key={index}>{category}</option>
           ))}
@@ -44,7 +47,7 @@ const ExpenseTrackerList = ({
           {expenses.map((expense, index) => (
             <tr key={index}>
               <td>{expense.description}</td>
-              <td>{expense.amount}</td>
+              <td>${expense.amount.toFixed(2)}</td>
               <td>{expense.category}</td>
               <td>
                 <button
@@ -56,6 +59,17 @@ const ExpenseTrackerList = ({
               </td>
             </tr>
           ))}
+          <tr>
+            <td>
+              <strong>Sum:</strong>
+            </td>
+            <td colSpan={3}>
+              $
+              {expenses
+                .reduce((acc, expense) => expense.amount + acc, 0)
+                .toFixed(2)}
+            </td>
+          </tr>
         </tbody>
       </table>
     </>

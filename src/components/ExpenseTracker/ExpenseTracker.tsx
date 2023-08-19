@@ -10,6 +10,7 @@ export interface Expense {
 
 const ExpenseTracker = () => {
   const categories = ['Groceries', 'Utilities', 'Entertainment'];
+  const [selectedCategory, setSelectedCategory] = useState('');
 
   const [expenses, setExpenses] = useState<Expense[]>([
     {
@@ -34,6 +35,9 @@ const ExpenseTracker = () => {
     },
   ]);
 
+  const filteredExpenses = selectedCategory
+    ? expenses.filter((expense) => expense.category === selectedCategory)
+    : expenses;
   return (
     <div>
       <h1>Expense Tracker</h1>
@@ -43,8 +47,9 @@ const ExpenseTracker = () => {
       />
       <hr className='my-5' />
       <ExpenseTrackerList
-        expenses={expenses}
+        expenses={filteredExpenses}
         categories={categories}
+        onSelectCategory={(category) => setSelectedCategory(category)}
         onDeleteExpense={(expense) =>
           setExpenses(
             expenses.filter((e) => e.description !== expense.description)
