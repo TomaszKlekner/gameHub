@@ -34,16 +34,60 @@ function App() {
     return () => controller.abort();
   }, []);
 
+  const deleteUser = async (user: User) => {
+    const originalUsers = [...users];
+    setUsers(users.filter((u) => u.id !== user.id));
+
+    await axios
+      .delete<User>('https://jsonplaceholder.typicode.com/users/' + user.id)
+      .catch((err) => {
+        setError(err.message);
+        setUsers(originalUsers);
+      });
+  };
+
+  const addUser = async () => {
+    const originalUsers = [...users];
+    const newUser = {
+      id: 0,
+      name: 'Tomasz',
+    };
+
+    setUsers([newUser, ...users]);
+
+    await axios
+      .post('https://jsonplaceholder.typicode.com/userss', newUser)
+      .then(({ data: savedUser }) => setUsers([savedUser, ...users]))
+      .catch((err) => {
+        setError(err.message);
+        setUsers(originalUsers);
+      });
+  };
+
   return (
     <div className='container my-5'>
       <h1>Home Page</h1>
       {error && <p className='text-danger'>{error}</p>}
-
       {isLoading && <div className='spinner-border'></div>}
 
-      <ul>
+      <button onClick={addUser} className='btn btn-primary mb-3'>
+        Add a user
+      </button>
+
+      <ul className='list-group'>
         {users.map((user) => (
-          <li key={user.id}>{user.name}</li>
+          <li
+            className='list-group-item d-flex justify-content-between align-items-center'
+            key={user.id}
+          >
+            {user.name}
+            <button
+              onClick={() => deleteUser(user)}
+              className='btn btn-outline-danger'
+            >
+              Delete
+            </button>
+          </li>
         ))}
       </ul>
     </div>
