@@ -1,10 +1,6 @@
 import { useEffect, useState } from 'react';
-import apiClient, { CanceledError } from './services/api-client';
-
-interface User {
-  id: number;
-  name: string;
-}
+import { CanceledError } from './services/api-client';
+import UserService, { User } from './services/user-service';
 
 function App() {
   const [users, setUsers] = useState<User[]>([]);
@@ -12,15 +8,10 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    // Built-in class in browsers that allows us to cancel asynch operations
-    const controller = new AbortController();
-
     setIsLoading(true);
+    const { request, cancel } = UserService.getAllUsers();
 
-    apiClient
-      .get<User[]>('/users', {
-        signal: controller.signal,
-      })
+    request
       .then((res) => {
         setUsers(res.data);
         setIsLoading(false);
@@ -31,14 +22,14 @@ function App() {
         setIsLoading(false);
       });
 
-    return () => controller.abort();
+    return () => cancel();
   }, []);
 
   const deleteUser = async (user: User) => {
     const originalUsers = [...users];
     setUsers(users.filter((u) => u.id !== user.id));
 
-    await apiClient.delete<User>('/users/' + user.id).catch((err) => {
+    UserService.deleteUser(user.id).catch((err) => {
       setError(err.message);
       setUsers(originalUsers);
     });
@@ -53,8 +44,7 @@ function App() {
 
     setUsers([newUser, ...users]);
 
-    await apiClient
-      .post('/users', newUser)
+    UserService.createUser(newUser)
       .then(({ data: savedUser }) => setUsers([savedUser, ...users]))
       .catch((err) => {
         setError(err.message);
@@ -67,7 +57,7 @@ function App() {
     const updatedUser = { ...user, name: user.name + '!' };
     setUsers(users.map((u) => (u.id === user.id ? updatedUser : u)));
 
-    await apiClient.put<User>('/users/' + user.id).catch((err) => {
+    UserService.updateUser(user).catch((err) => {
       setError(err.message);
       setUsers(originalUsers);
     });
