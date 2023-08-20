@@ -9,18 +9,26 @@ interface User {
 function App() {
   const [users, setUsers] = useState<User[]>([]);
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     // Built-in class in browsers that allows us to cancel asynch operations
     const controller = new AbortController();
+
+    setIsLoading(true);
+
     axios
       .get<User[]>('https://jsonplaceholder.typicode.com/users', {
         signal: controller.signal,
       })
-      .then((res) => setUsers(res.data))
+      .then((res) => {
+        setUsers(res.data);
+        setIsLoading(false);
+      })
       .catch((err) => {
         if (err instanceof CanceledError) return;
         setError(err.message);
+        setIsLoading(false);
       });
 
     return () => controller.abort();
@@ -30,6 +38,9 @@ function App() {
     <div className='container my-5'>
       <h1>Home Page</h1>
       {error && <p className='text-danger'>{error}</p>}
+
+      {isLoading && <div className='spinner-border'></div>}
+
       <ul>
         {users.map((user) => (
           <li key={user.id}>{user.name}</li>
