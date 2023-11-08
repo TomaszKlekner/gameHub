@@ -1,5 +1,5 @@
+import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
 
 export interface Todo {
   useId: number;
@@ -9,26 +9,21 @@ export interface Todo {
 }
 
 const TodoList = () => {
-  const controller = new AbortController();
-  const [todos, setTodos] = useState<Todo[]>([]);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
+  const fetchTodos = () =>
     axios
-      .get('https://jsonplaceholder.typicode.com/todos', {
-        signal: controller.signal,
-      })
-      .then((res) => setTodos(res.data))
-      .catch((err) => setError(err.message));
+      .get<Todo[]>('https://xjsonplaceholder.typicode.com/todos')
+      .then((res) => res.data);
 
-    return () => controller.abort();
-  }, []);
+  const { data: todos, error } = useQuery<Todo[], Error>({
+    queryKey: ['todos'],
+    queryFn: fetchTodos,
+  });
 
-  if (error) return <p>{error}</p>;
+  if (error) return <p>{error.message}</p>;
 
   return (
     <ul>
-      {todos.map((todo) => (
+      {todos?.map((todo) => (
         <li key={todo.id}>
           #{todo.useId} - {todo.title} :{' '}
           {todo.completed ? 'Completed' : 'Pending'}
