@@ -11,7 +11,7 @@ export interface Post {
 export const usePosts = () => {
   const fetchPosts = () =>
     axios
-      .get<Post[]>('https://jsonplaceholder.typicode.com/postsx')
+      .get<Post[]>('https://jsonplaceholder.typicode.com/posts')
       .then((res) => res.data);
 
   return useQuery<Post[], Error>({
