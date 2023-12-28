@@ -2,8 +2,17 @@ import { useState } from 'react';
 import { usePosts } from '../hooks/usePosts';
 
 export const PostList = () => {
-  const [userId, setUserId] = useState<number>();
-  const { data: postList, isLoading, isError, error } = usePosts(userId);
+  const pageSize = 10;
+  const [page, setpage] = useState(1);
+  const {
+    data: postList,
+    isLoading,
+    isError,
+    error,
+  } = usePosts({
+    page,
+    pageSize,
+  });
 
   if (isLoading) return <p>Loading..</p>;
 
@@ -11,17 +20,6 @@ export const PostList = () => {
 
   return (
     <>
-      <select
-        onChange={(e) => setUserId(parseInt(e.target.value))}
-        value={userId}
-        className='form-select mb-3'
-      >
-        <option>Select a user</option>
-        <option value='1'>User 1</option>
-        <option value='2'>User 2</option>
-        <option value='3'>User 3</option>
-      </select>
-
       <ul className='list-group'>
         {postList?.map((post) => (
           <li className='list-group-item' key={post.id}>
@@ -29,6 +27,34 @@ export const PostList = () => {
           </li>
         ))}
       </ul>
+
+      <nav className='mt-4' aria-label='Page Pagination'>
+        <ul className='pagination pagination-md'>
+          <li className='page-item'>
+            <button
+              onClick={() => setpage(page - 1)}
+              className={page === 1 ? 'page-link disabled' : 'page-link'}
+              aria-label='Previous'
+            >
+              <span aria-hidden='true'>&laquo;</span>
+            </button>
+          </li>
+
+          <li className='page-item'>
+            <a className='page-link'>{page}</a>
+          </li>
+
+          <li className='page-item'>
+            <button
+              onClick={() => setpage(page + 1)}
+              className={page === pageSize ? 'page-link disabled' : 'page-link'}
+              aria-label='Next'
+            >
+              <span aria-hidden='true'>&raquo;</span>
+            </button>
+          </li>
+        </ul>
+      </nav>
     </>
   );
 };
